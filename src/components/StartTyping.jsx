@@ -1,45 +1,111 @@
-// StartTyping.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { FaClock, FaFont } from 'react-icons/fa';
+import sampleWords from './sampleWords';
+import {
+  LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
+} from 'recharts';
 
-const sampleWords = 'word buy too frighten some saw offer possible never chest'.split(' ');
 
 const StartTyping = () => {
   const [typed, setTyped] = useState('');
   const [startTime, setStartTime] = useState(null);
   const [timer, setTimer] = useState(0);
-  const [intervalId, setIntervalId] = useState(null);
-  const [duration, setDuration] = useState(30); // default to 30 seconds
+  const intervalRef = useRef(null); // useRef instead of useState
+  const [duration, setDuration] = useState(30);
   const [isRunning, setIsRunning] = useState(false);
   const [accuracy, setAccuracy] = useState(100);
   const [wpm, setWPM] = useState(0);
   const inputRef = useRef();
+  const [wpmHistory, setWpmHistory] = useState([]);
+  const [intervalId, setIntervalId] = useState(null);
+  const typedRef = useRef('');
+
+
+  const wordRefs = useRef([]); // <-- array of refs for each word
 
   useEffect(() => {
-    if (timer >= duration && isRunning) {
-      clearInterval(intervalId);
+    if (isRunning && timer >= duration) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
       setIsRunning(false);
     }
   }, [timer, duration, isRunning]);
 
   const startTest = () => {
+    if (intervalId) clearInterval(intervalId);
+
     setTyped('');
-    setStartTime(Date.now());
+    setWPM(0);
+    setAccuracy(100);
+    setWpmHistory([]);
     setTimer(0);
     setIsRunning(true);
-    const id = setInterval(() => setTimer(prev => prev + 1), 1000);
-    setIntervalId(id);
-    inputRef.current.focus();
+
+    inputRef.current?.focus();
+    // every 5 second graph -------------------
+    const id = setInterval(() => {
+      setTimer((prevTimer) => {
+        const newTime = prevTimer + 1;
+
+        // Stop the test when time is up
+        if (newTime >= duration) {
+          clearInterval(id);
+          setIsRunning(false);
+        }
+
+        // Calculate WPM every 5 seconds only
+        if (newTime % 5 === 0) {
+          const wordsTyped = typedRef.current.trim().split(' ').filter(Boolean).length;
+          const currentWPM = Math.round((wordsTyped / newTime) * 60);
+          setWPM(currentWPM);
+
+          setWpmHistory((prevHistory) => [
+            ...prevHistory,
+            { time: newTime, wpm: currentWPM },
+          ]);
+        }
+
+        return newTime;
+      });
+    }, 1000);
+
   };
+
 
   const handleInputChange = (e) => {
     const value = e.target.value;
     setTyped(value);
-    const correctChars = sampleWords.join(' ').split('').filter((c, i) => value[i] === c).length;
-    setAccuracy(((correctChars / value.length) * 100).toFixed(2) || 100);
-    const wordsTyped = value.trim().split(' ').filter(Boolean).length;
-    setWPM(Math.round((wordsTyped / (timer || 1)) * 60));
+    typedRef.current = value;
+
+    // Character-based accuracy
+    const correctChars = sampleWords.join(' ')
+      .split('')
+      .filter((c, i) => value[i] === c).length;
+    const totalChars = value.length;
+    setAccuracy(((correctChars / (totalChars || 1)) * 100).toFixed(2));
+
+    // Word-based WPM (real-time)
+    const wordsTyped = value.trim().split(' ').filter(Boolean);
+    setWPM(Math.round((wordsTyped.length / (timer || 1)) * 60));
+
+    // 🔁 Scroll the current word into view
+    const currentIndex = wordsTyped.length;
+    if (wordRefs.current[currentIndex]) {
+      wordRefs.current[currentIndex].scrollIntoView({
+        behavior: 'smooth',
+        inline: 'center',
+        block: 'nearest',
+      });
+    }
   };
+
+
+  useEffect(() => {
+    return () => {
+      if (intervalId) { clearInterval(intervalId); }
+    };
+  }, [intervalId]);
+
 
   return (
     <div className="min-h-screen bg-black text-white py-12 px-4">
@@ -52,26 +118,33 @@ const StartTyping = () => {
             <FaClock className="text-teal-400" /> time
           </div>
           <div className="flex items-center gap-2">
-            <FaFont className="text-teal-400" /> words
+            <FaFont className="text-teal-400" /> sampleWords
           </div>
           {[10, 30, 60].map((val) => (
             <button
               key={val}
               onClick={() => setDuration(val)}
-              className={`px-2 py-1 border rounded text-xs ${duration === val ? 'border-teal-400 text-teal-400' : 'border-zinc-600 text-zinc-400'}`}
+              disabled={isRunning}
+              className={`px-2 py-1 border rounded text-xs ${duration === val ? 'border-teal-400 text-teal-400' : 'border-zinc-600 text-zinc-400'
+                }`}
             >
               {val}s
             </button>
           ))}
         </div>
 
-        {/* Typing Words */}
-        <div className="text-xl md:text-2xl font-mono tracking-wide mb-6 max-w-3xl mx-auto">
-          {sampleWords.map((word, i) => (
-            <span key={i} className={typed.split(' ')[i] === word ? 'text-white font-bold' : 'text-zinc-500'}>
-              {word + ' '}
-            </span>
-          ))}
+        <div className="overflow-x-auto w-full max-w-3xl h-12 mx-auto mb-6 relative border-y border-zinc-700 no-scrollbar">
+          <div className="whitespace-nowrap font-mono text-xl md:text-2xl tracking-wide px-2">
+            {sampleWords.map((word, i) => (
+              <span
+                key={i}
+                ref={(el) => (wordRefs.current[i] = el)} // attach ref
+                className={`inline-block mr-4 ${typed.split(' ')[i] === word ? 'text-white font-bold' : 'text-zinc-500'}`}
+              >
+                {word}
+              </span>
+            ))}
+          </div>
         </div>
 
         {/* Input Box */}
@@ -96,6 +169,21 @@ const StartTyping = () => {
           {isRunning ? 'Restart' : 'Start Test'}
         </button>
       </div>
+
+      <div className="w-full max-w-3xl mx-auto mt-12 bg-zinc-800 p-4 rounded shadow">
+        <h2 className="text-white text-lg mb-4">Typing Speed Chart (WPM over Time)</h2>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={wpmHistory}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="time" label={{ value: 'Time (s)', position: 'insideBottomRight', offset: -5 }} />
+            {/* <XAxis dataKey={(item) => item.time / 5} label={{ value: 'Time (5s)', position: 'insideBottomRight', offset: -5 }} /> */}
+            <YAxis label={{ value: 'WPM', angle: -90, position: 'insideLeft' }} />
+            <Tooltip />
+            <Line type="monotone" dataKey="wpm" stroke="#14b8a6" strokeWidth={2} dot={false} />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
     </div>
   );
 };
