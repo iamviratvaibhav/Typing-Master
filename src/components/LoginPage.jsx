@@ -15,8 +15,6 @@ import Navbar from './Navbar';
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
   const navigate = useNavigate();
-  // const [token, setToken ] =useState(localStorage.getItem("typingMasterToken") ?? false);
-  // const {authUser, setAuthUser} = useAuth();
 
   const {
     register,
@@ -169,39 +167,7 @@ const LoginPage = () => {
         </form>
 
         <div className="my-5 text-center text-zinc-500 text-sm">or</div>
-        {/* <GoogleLogin
-          onSuccess={async (credentialResponse) => {
-            // const decoded = jwt_decode(credentialResponse.credential);
-            const decoded = jwtDecode(credentialResponse.credential);
-
-            try {
-              // const res = await axios.post("http://localhost:5000/typing-master/signup", {
-              // const res = await axios.post("/google-signup-login", {
-              //   email: decoded.email,
-              //   name: decoded.name,
-              // });
-              const res = await axios.post("http://localhost:5000/typing-master/google-signup-login", {
-                email: decoded.email,
-                name: decoded.name,
-              });
-
-
-              console.log("User login Successfully ")
-              toast.success("User login Successfully ")
-
-            } catch (err) {
-              console.error("Google Login API Error:", err);
-              toast.error("User login failed");
-            }
-          }}
-          onError={() => {
-            console.log('Google Sign In Failed');
-          }}
-          theme="filled_black"
-          width="100%"
-        /> */}
-
-
+        
         <GoogleLogin
           onSuccess={async (credentialResponse) => {
             const decoded = jwtDecode(credentialResponse.credential);
@@ -227,21 +193,6 @@ const LoginPage = () => {
           theme="filled_black"
           width="100%"
         />
-
-
-        {/* <button className="w-full py-2 px-4 bg-white text-black font-semibold rounded-md shadow-sm hover:bg-zinc-100 flex items-center justify-center gap-2 transition">
-          <img
-            src="https://www.svgrepo.com/show/475656/google-color.svg"
-            alt="google"
-            className="h-5 w-5"
-          />
-          Continue with Google
-        </button> */}
-
-        {/* <GoogleLoginButton
-        className="w-full py-2 px-4 bg-white text-black font-semibold rounded-md shadow-sm hover:bg-zinc-100 flex items-center justify-center gap-2 transition"
-        
-        /> */}
       </div>
     </div>
     </>
