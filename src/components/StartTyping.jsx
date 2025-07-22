@@ -4,11 +4,10 @@ import sampleWords from './sampleWords';
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer
 } from 'recharts';
-
+import Navbar from './Navbar';
 
 const StartTyping = () => {
   const [typed, setTyped] = useState('');
-  const [startTime, setStartTime] = useState(null);
   const [timer, setTimer] = useState(0);
   const intervalRef = useRef(null); // useRef instead of useState
   const [duration, setDuration] = useState(30);
@@ -37,7 +36,7 @@ const StartTyping = () => {
     setTyped('');
     setWPM(0);
     setAccuracy(100);
-    setWpmHistory([]);
+    setWpmHistory([{ time: 0, wpm: 0 }]);
     setTimer(0);
     setIsRunning(true);
 
@@ -68,7 +67,7 @@ const StartTyping = () => {
         return newTime;
       });
     }, 1000);
-
+    setIntervalId(id);
   };
 
 
@@ -108,7 +107,9 @@ const StartTyping = () => {
 
 
   return (
-    <div className="min-h-screen bg-black text-white py-12 px-4">
+   <>
+   <Navbar />
+    <div className="min-h-screen bg-black text-white py-12 px-4 pt-15">
       <div className="text-center">
         <h1 className="text-2xl font-bold mb-4 text-teal-400">Start Typing Test</h1>
 
@@ -133,8 +134,13 @@ const StartTyping = () => {
           ))}
         </div>
 
-        <div className="overflow-x-auto w-full max-w-3xl h-12 mx-auto mb-6 relative border-y border-zinc-700 no-scrollbar">
-          <div className="whitespace-nowrap font-mono text-xl md:text-2xl tracking-wide px-2">
+        {/* Sample Words */}
+        <div className="overflow-x-auto w-full max-w-3xl h-12 mx-auto mb-6 relative border-y border-zinc-700 no-scrollbar"
+          style={{ pointerEvents: 'none' }}
+        >
+          <div className="whitespace-nowrap font-mono text-xl md:text-2xl tracking-wide px-2"
+            style={{ pointerEvents: 'auto' }}
+          >
             {sampleWords.map((word, i) => (
               <span
                 key={i}
@@ -170,7 +176,7 @@ const StartTyping = () => {
         </button>
       </div>
 
-      <div className="w-full max-w-3xl mx-auto mt-12 bg-zinc-800 p-4 rounded shadow">
+      <div className="w-full max-w-3xl pr-20 mx-auto mt-12 bg-zinc-800 p-4 rounded shadow">
         <h2 className="text-white text-lg mb-4">Typing Speed Chart (WPM over Time)</h2>
         <ResponsiveContainer width="100%" height={200}>
           <LineChart data={wpmHistory}>
@@ -185,6 +191,7 @@ const StartTyping = () => {
       </div>
 
     </div>
+   </>
   );
 };
 
