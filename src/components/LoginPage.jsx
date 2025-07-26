@@ -8,7 +8,7 @@ import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
-import Navbar from './Navbar';
+// import Navbar from './Navbar';
 // import { useAuth } from './AuthProvider';
 
 
@@ -27,7 +27,7 @@ const LoginPage = () => {
   const onSubmit = async (data) => {
     const endpoint = isLogin ? 'login' : 'signup';
     console.log(`${endpoint.toUpperCase()} data:`, data);
-    await axios.post(`http://localhost:5000/typing-master/${endpoint}`, data, {
+    await axios.post(`http://localhost:5000/api/${endpoint}`, data, {
       withCredentials: true,
 
     })
@@ -58,7 +58,6 @@ const LoginPage = () => {
 
   return (
     <>
-    <Navbar />
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black flex items-center justify-center px-4 text-white">
       <div className="w-full max-w-md bg-zinc-950 border border-zinc-800 p-8 rounded-2xl shadow-xl">
         <h2 className="text-2xl font-semibold text-center mb-6">

@@ -16,6 +16,7 @@ function App() {
         <Route path='/startTyping' element={<StartTyping />} />
         <Route path='/multiPlayer' element={<MultiPlayer />} />
 
+
       </Routes>
     </Router>
   );
