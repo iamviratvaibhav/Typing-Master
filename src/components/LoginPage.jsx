@@ -34,7 +34,7 @@ const LoginPage = () => {
       .then((response) => {
         console.log(response);
         if (response.data) {
-          // navigate('/HeroSection');
+          navigate('/HeroSection');
           toast.success("Login Successfully");
           localStorage.setItem("typingMasterUser", JSON.stringify(response.data))
           // setAuthUser(response.data);

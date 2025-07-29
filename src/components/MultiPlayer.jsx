@@ -18,7 +18,7 @@ const MultiPlayer = () => {
   return (
     <> 
     <Navbar />
-    <div className="min-h-screen bg-gradient-to-br from-black via-zinc-900 to-black text-white p-8">
+    <div className="min-h-screen bg-gradient-to-br py-20 from-black via-zinc-900 to-black text-white p-8">
       <h1 className="text-3xl font-semibold text-center mb-10">Multiplayer Arena</h1>
 
       <div className="flex flex-col md:flex-row justify-center gap-6">

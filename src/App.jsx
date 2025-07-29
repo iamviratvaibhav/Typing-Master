@@ -6,6 +6,7 @@ import HeroSection from './components/HeroSection'
 import StartTyping from './components/StartTyping';
 import MultiPlayer from './components/MultiPlayer';
 import Navbar from './components/Navbar';
+import UserProfile from './components/UserProfile';
 function App() {
   return (
     <Router>
@@ -15,6 +16,7 @@ function App() {
         <Route path='/heroSection' element={<HeroSection />} />
         <Route path='/startTyping' element={<StartTyping />} />
         <Route path='/multiPlayer' element={<MultiPlayer />} />
+        <Route path='/userProfile' element={<UserProfile />} />
 
 
       </Routes>
