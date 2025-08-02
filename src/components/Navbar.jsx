@@ -5,6 +5,7 @@ import { MdOutlinePeopleAlt } from "react-icons/md";
 import { MdOutlineLeaderboard } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { useNavigate } from 'react-router-dom';
+import UserProfile from './UserProfile';
 // import { label } from 'framer-motion/client';
 const Navbar = () => {
     const navigate= useNavigate();
@@ -24,7 +25,8 @@ const Navbar = () => {
         { id: "home", label: "Home" },
         { id: "multiplayer", lable: "Multiplayer" },
         { id: "leaderboard", lable: "Leaderboard" },
-        { id: "profile", lable: "Profile" },
+        // { id: "profile", lable: "Profile" },
+        { id: "UserProfile", lable: "Profile" },
     ]
 
     const handleMenuItemClick = (selectionId, path) => {
@@ -69,8 +71,8 @@ const Navbar = () => {
                 <li>
                     <CgProfile
                     id='profile'
-                    className={`hover:text-teal-400 cursor-pointer size-6 ${activeSection === "profile" && "text-teal-400"}`}
-                    onClick={()=> handleMenuItemClick("profile", '/profile')}
+                    className={`hover:text-teal-400 cursor-pointer size-6 ${activeSection === "UsreProfile" && "text-teal-400"}`}
+                    onClick={()=> handleMenuItemClick("UserProfile", '/profile')}
                     />
                 </li>
 

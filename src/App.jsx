@@ -16,7 +16,7 @@ function App() {
         <Route path='/heroSection' element={<HeroSection />} />
         <Route path='/startTyping' element={<StartTyping />} />
         <Route path='/multiPlayer' element={<MultiPlayer />} />
-        <Route path='/userProfile' element={<UserProfile />} />
+        <Route path='/profile' element={<UserProfile />} />
 
 
       </Routes>
