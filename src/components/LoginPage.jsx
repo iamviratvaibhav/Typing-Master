@@ -10,7 +10,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 // import Navbar from './Navbar';
 // import { useAuth } from './AuthProvider';
-
+const backendURL=import.meta.env.VITE_BACKEND_URL;
 
 const LoginPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -27,7 +27,8 @@ const LoginPage = () => {
   const onSubmit = async (data) => {
     const endpoint = isLogin ? 'login' : 'signup';
     console.log(`${endpoint.toUpperCase()} data:`, data);
-    await axios.post(`http://localhost:5000/api/${endpoint}`, data, {
+    // await axios.post(`http://localhost:5000/api/${endpoint}`, data, {
+    await axios.post(`${backendURL}/api/${endpoint}`, data, {
       withCredentials: true,
 
     })
